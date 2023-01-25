@@ -50,7 +50,7 @@ body {
     color: whitesmoke;
 }
 
-.contenedor .div-formulario form {
+.contenedor .form{
     width: 100%;
     height: 100%;
     display: flex;
@@ -68,7 +68,7 @@ body {
 
 /* ESTILOS LISTADO */
 .contenedor .div-listado {
-    width: 55%;
+    width: 50%;
     height: calc(100% - 50px);
     margin: 15px 15px;
     background-color: rgb(135, 132, 132);
@@ -88,20 +88,20 @@ body {
 }
 
 .contenedor .div-listado .div-citas {
-    background-color: blue;
-    width: 100%;
-    height: 100%;
+    background-color: beige;
+    width: 90%;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    margin: 10px;
-    padding: 0 30px;
-    align-items: baseline;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    color: black;
+
 }
 
-.contenedor .div-listado .div-citas p {
-    margin: 10px 0;
-    font-size: 1em;
-    color: #ddd;
+.contenedor .div-listado .t-body{
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    word-wrap: break-word;
 }
 
 hr {
@@ -126,3 +126,9 @@ hr {
     background-color: rgb(238, 10, 86);
     color:white;
 }
+
+/* .contenedor .div-listado .div-citas p {
+    margin: 10px 0;
+    font-size: 1em;
+    color: #ddd;
+} */
