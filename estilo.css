@@ -96,12 +96,10 @@ body {
 
 }
 
-.contenedor .div-listado .t-body{
-    width: 100%;
-    height: auto;
-    display: grid;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
-    word-wrap: break-word;
+.contenedor .div-listado .div-citas p {
+    margin: 10px 0;
+    font-size: 1em;
+    color: black;
 }
 
 hr {
@@ -119,16 +117,10 @@ hr {
 
 .btn-editar {
     background-color: rgb(230, 193, 211);
-    color: black;
+    color: white;
 }
 
 .btn-eliminar {
     background-color: rgb(238, 10, 86);
-    color:white;
+    color: white;
 }
-
-/* .contenedor .div-listado .div-citas p {
-    margin: 10px 0;
-    font-size: 1em;
-    color: #ddd;
-} */

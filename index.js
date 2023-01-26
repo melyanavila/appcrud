@@ -1,208 +1,215 @@
-//Evento para crea una cita\\
-document.getElementById("formulario").addEventListener("submit",crear);
+let listaCitas = [];
 
-//Función crear\\
-function crear (e){
-    nombre = document.getElementById("nombre").value
-    empresa = document.getElementById("empresa").value
-    lugar = document.getElementById("lugar").value
-    hora = document.getElementById("hora").value
-
-
-    let cita ={
-        nombre,
-        empresa,
-        lugar,
-        hora
-    }
-    
-    if (localStorage.getItem("Citas") === null){
-        let citas = []
-        citas.push(cita)
-        localStorage.setItem("Citas", JSON.stringify(citas))
-    }
-    else{
-        let citas = JSON.parse(localStorage.getItem("Citas"))
-        citas.push(cita)
-        localStorage.setItem("Citas", JSON.stringify(citas))
-    }
-
-    leer();
-    document.getElementById("formulario").reset();
-    console.log("Cita guardada correctamente")
-    Event.preventDefault()
+const objCita = {
+    id: '',
+    asunto: '',
+    lugar: '',
+    hora: ''
 }
 
-//Crear función Leer\\
-function leer (){
-    let citas =JSON.parse(localStorage.getItem("Citas"));
-    document.getElementById("tbody").innerHTML = ""
-    for (let i=0; i < citas.length; i++){
-        let nombre = citas[i].nombre
-        let empresa = citas[i].empresa
-        let lugar = citas[i].lugar
-        let hora = citas[i].hora
+let editando = false;
 
-        document.getElementById("tbody").innerHTML +=
-        `<tr>
-            <td>${nombre}</td>
-            <td>${empresa}</td>
-            <td>${lugar}</td>
-            <td>${hora}</td>
-        <tr>
-        `
+const formulario = document.querySelector('#formulario');
+const asuntoInput = document.querySelector('#asunto');
+const lugarInput = document.querySelector('#lugar');
+const horaInput = document.querySelector('#hora');
+const btnAgregarInput = document.querySelector('#btnAgregar');
+
+formulario.addEventListener('submit', validarFormulario);
+
+function validarFormulario(e) {
+    e.preventDefault();
+
+    if(asuntoInput.value === '' || lugarInput.value === '' || horaInput.value === '') {
+        alert('Todos los campos se deben llenar');
+        return;
+    }
+
+    if(editando) {
+        editarCita();
+        editando = false;
+    } else {
+        objCita.id = Date.now();
+        objCita.asunto = asuntoInput.value;
+        objCita.lugar = lugarInput.value;
+        objCita.hora = horaInput.value;
+
+        agregarCita();
     }
 }
 
-leer();
+function agregarCita() {
 
+    listaCitas.push({...objCita});
 
-// /* let listaCitas = [];
+    mostrarCitas();
 
-// const objCita = {
-//     nombre: '',
-//     empresa: '',
-//     lugar: '',
-//     hora: ''
-// }
+    formulario.reset();
+    limpiarObjeto();
+}
 
-// let editando = false;
+function limpiarObjeto() {
+    objCita.id = '';
+    objCita.asunto = '';
+    objCita.lugar = '';
+    objCita.hora = '';
+}
 
-// const formulario = document.querySelector('#formulario');
-// const nombreInput = document.querySelector('#nombre');
-// const empresaInput = document.querySelector('#empresa');
-// const lugarInput = document.querySelector('#lugar');
-// const horaInput = document.querySelector('#hora');
-// const btnAgregarInput = document.querySelector('#btnAgregar');
+function mostrarCitas() {
+    limpiarHTML();
 
-// formulario.addEventListener('submit', validarFormulario);
+    const divCitas = document.querySelector('.div-citas');
 
-// function validarFormulario(e) {
-//     e.preventDefault();
+    listaCitas.forEach(cita => {
+        const {id, asunto, lugar, hora} = cita;
 
-//     if(nombreInput.value === '' || empresaInput.value === '' ) {
-//         alert('Llene campo nombre y/o empresa');
-//         return;
-//     }
+        const parrafo = document.createElement('p');
+        parrafo.textContent = `${id} - ${asunto} - ${lugar} - ${hora} - `;
+        parrafo.dataset.id = id;
 
-//     if(lugarInput.value === '' || horaInput.value === '' ) {
-//         alert('Llene campo lugar y/o hora');
-//         return;
-//     }
+        const editarBoton = document.createElement('button');
+        editarBoton.onclick = () => cargarCita(cita);
+        editarBoton.textContent = 'Editar';
+        editarBoton.classList.add('btn', 'btn-editar');
+        parrafo.append(editarBoton);
 
-//     if(editando) {
-//         editarDatos();
-//         editando = false;
-//     } else {
-//         objCita.nombre = nombreInput.value;
-//         objCita.empresa = empresaInput.value;
-//         objCita.lugar = lugarInput.value;
-//         objCita.hora = horaInput.value;
+        const eliminarBoton = document.createElement('button');
+        eliminarBoton.onclick = () => eliminarEmpleado(id);
+        eliminarBoton.textContent = 'Eliminar';
+        eliminarBoton.classList.add('btn', 'btn-eliminar');
+        parrafo.append(eliminarBoton);
 
-//         agregarDatos();
-//     }
-// }
+        const hr = document.createElement('hr');
 
-// function agregarDatos() {
+        divCitas.appendChild(parrafo);
+        divCitas.appendChild(hr);
+    });
+}
 
-//     listaCitas.push({...objDatos});
+function cargarCita(cita) {
+    const {id, asunto, lugar, hora} = cita;
 
-//     mostrarDatos();
+    asuntoInput.value = asunto;
+    lugarInput.value = lugar;
+    horaInput.value = hora;
 
-//     formulario.reset();
-//     limpiarObjeto();
-// }
+    objCita.id = id
 
-// function limpiarObjeto() {
-//     objCita.nombre = '';
-//     objCita.empresa = '';
-//     objCita.lugar = '';
-//     objCita.hora = '';
-// }
+    formulario.querySelector('button[type="submit"]').textContent = 'Actualizar';
 
-// function mostrarDatos() {
-//     limpiarHTML();
+    editando = true;
+}
 
-//     const divDatos = document.querySelector('.div-citas');
+function editarCita() {
 
-//     listaCitas.forEach(cita => {
-//         const {nombre, empresa,lugar,hora} = cita;
+    objCita.asunto = asuntoInput.value;
+    objCita.lugar = lugarInput.value;
+    objCita.hora = horaInput.value;
 
-//         const parrafo = document.createElement('p');
-//         parrafo.textContent = `${nombre} - ${empresa} - ${lugar} - ${hora} - `;
+    listaCitas.map(cita => {
 
-//         const editarBoton = document.createElement('button');
-//         editarBoton.onclick = () => cargarCita(cita);
-//         editarBoton.textContent = 'Editar';
-//         editarBoton.classList.add('btn', 'btn-editar');
-//         parrafo.append(editarBoton);
+        if(cita.id === objCita.id) {
+            cita.id = objCita.id;
+            cita.asunto = objCita.asunto;
+            cita.lugar = objCita.lugar;
+            cita.hora = objCita.hora;
+        }
 
-//         const eliminarBoton = document.createElement('button');
-//         eliminarBoton.onclick = () => eliminarCita(id);
-//         eliminarBoton.textContent = 'Eliminar';
-//         eliminarBoton.classList.add('btn', 'btn-eliminar');
-//         parrafo.append(eliminarBoton);
+    });
 
-//         const hr = document.createElement('hr');
+    limpiarHTML();
+    mostrarCitas();
+    formulario.reset();
 
-//         divCitas.appendChild(parrafo);
-//         divCitas.appendChild(hr);
-//     });
-// }
+    formulario.querySelector('button[type="submit"]').textContent = 'Agregar';
 
-// function cargarDatos(cita) {
-//     const {id, nombre, empresa, lugar, hora} = cita;
+    editando = false;
+}
 
-//     nombreInput.value = nombre;
-//     empresaInput.value = empresa;
-//     lugarInput.value = lugar;
-//     horaInput.value = hora;
+function eliminarCita(id) {
 
-//     objCita.id = id;
+    listaCitas = listaCitas.filter(cita => cita.id !== id);
 
-//     formulario.querySelector('button[type="submit"]').textContent = 'Actualizar';
+    limpiarHTML();
+    mostrarCitas();
+}
 
-//     editando = true;
-// }
+function limpiarHTML() {
+    const divCitas = document.querySelector('.div-citas');
+    while(divCitas.firstChild) {
+        divCitas.removeChild(divCitas.firstChild);
+    }
+}
 
-// function editarDatos() {
+/* let listaCitas = [];
 
-//     objCita.nombre = nombreInput.value;
-//     objCita.empresa = empresaInput.value;
-//     objCita.lugar = lugarInput.value;
-//     objCita.hora = horaInput.value;
+const objCita = {
+    asunto: '',
+    lugar: '',
+    hora: ''
+}
 
-//     listaCitas.map(cita => {
+let editando = false;
 
-//         if(cita.id === objCita.id) {
-//             cita.id = objEmpleado.id;
-//             empleado.nombre = objEmpleado.nombre;
-//             empleado.puesto = objEmpleado.puesto;
+const formulario = document.querySelector('#formulario');
+const nombreInput = document.querySelector('#nombre');
+const empresaInput = document.querySelector('#empresa');
+const lugarInput = document.querySelector('#lugar');
+const horaInput = document.querySelector('#hora');
+const btnAgregarInput = document.querySelector('#btnAgregar');
 
-//         }
+formulario.addEventListener('submit', validarFormulario);
 
-//     });
+function validarFormulario(e) {
+    e.preventDefault();
 
-//     limpiarHTML();
-//     mostrarEmpleados();
-//     formulario.reset();
+    if(nombreInput.value === '' || empresaInput.value === '' || lugarInput.value === '' || horaInput.value === '') {
+        alert('Todos los campos son obligatorios');
+        return;
+    }
 
-//     formulario.querySelector('button[type="submit"]').textContent = 'Agregar';
+    if(editando) {
+        // editarCita();
+        editando = false;
+    } else {
+        objCita.nombre = nombreInput.value;
+        objCita.empresa = empresaInput.value;
+        objCita.lugar = lugarInput.value;
+        objCita.hora = horaInput.value;
 
-//     editando = false;
-// }
+        agregarCita();
+    }
+}
 
-// function eliminarEmpleado(id) {
+function agregarCita() {
+    listaCitas.push({...objCita})
 
-//     listaEmpleados = listaEmpleados.filter(empleado => empleado.id !== id);
+    mostrarCita();
+}
 
-//     limpiarHTML();
-//     mostrarEmpleados();
-// }
+function mostrarCita() {
+    const divCitas = document.querySelector = (".div-citas");
 
-// function limpiarHTML() {
-//     const divEmpleados = document.querySelector('.div-empleados');
-//     while(divEmpleados.firstChild) {
-//         divEmpleados.removeChild(divEmpleados.firstChild);
-//     }
-// } */
+    listaCitas.forEach( cita => {
+    const {nombre, empresa, lugar, hora} = cita;
+
+    const parrafo = document.createElement('p');
+    parrafo.textContent = `${nombre} - ${empresa} - ${lugar} -${hora}`
+    divCitas.appendChild(parrafo);
+
+    const editarBoton = document.createElement('button');
+    // editarBoton.onclick = () => cargarCita(cita);
+    editarBoton.textContent = 'Editar';
+    editarBoton.classList.add('btn', 'btn-editar');
+    parrafo.append(editarBoton);
+
+    const eliminarBoton = document.createElement('button');
+    // eliminarBoton.onclick = () => eliminarCita(cita);
+    editarBoton.textContent = 'Eliminar';
+    editarBoton.classList.add('btn', 'btn-eliminar');
+    parrafo.append(eliminarBoton);
+
+    const hr = document.createElement('hr');
+    divCitas.appendChild(hr);
+    });
+} */
