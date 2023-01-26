@@ -124,3 +124,21 @@ hr {
     background-color: rgb(238, 10, 86);
     color: white;
 }
+
+/* ----- -----  Mediaqueries ----- ----- */
+@media screen and (max-width: 800px) {
+    .contenedor .div-formulario {
+		grid-template-columns: 1fr;
+	}
+
+	.div-listado, 
+	.div-citas,
+	.formulario__grupo-btn-enviar {
+		grid-column: 1;
+	}
+
+/* ----- -----  Mediaqueries ----- ----- */
+	.formulario__btn {
+		width: 100%;
+	}
+}
